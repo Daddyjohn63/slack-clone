@@ -13,6 +13,7 @@ export const AuthScreen = () => {
     <div className="h-full flex items-center justify-center bg-[#5C3B58]">
       <div className="md:h-auto md:w-[420px]">
         {state === 'signIn' ? (
+          // need to pass setState to SignInCard and SignUpCard as these cards need to be able to switch between sign in and sign up.
           <SignInCard setState={setState} />
         ) : (
           <SignUpCard setState={setState} />
