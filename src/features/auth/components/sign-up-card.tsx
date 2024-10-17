@@ -15,17 +15,20 @@ import { SignInFlow } from '../types';
 import { useState } from 'react';
 import { TriangleAlert } from 'lucide-react';
 import { useAuthActions } from '@convex-dev/auth/react';
+import { useRouter } from 'next/navigation';
 interface SignUpCardProps {
   setState: (state: SignInFlow) => void;
 }
 
 export const SignUpCard = ({ setState }: SignUpCardProps) => {
   const { signIn } = useAuthActions();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
+  const router = useRouter();
 
   const onPasswordSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,11 +37,12 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
       return;
     }
     setPending(true);
-    signIn('password', { email, password, flow: 'signUp' })
+    signIn('password', { name, email, password, flow: 'signUp' })
       .catch(() => {
         setError('Something went wrong');
       })
       .finally(() => setPending(false));
+    router.push('/');
   };
 
   const onProviderSignUp = (value: 'github' | 'google') => {
@@ -64,12 +68,21 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
         <form onSubmit={onPasswordSignUp} className="space-y-2.5">
           <Input
             disabled={pending}
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Full name"
+            type="text"
+            required
+          />
+          <Input
+            disabled={pending}
             value={email}
             onChange={e => setEmail(e.target.value)}
             placeholder="Email"
             type="email"
             required
           />
+
           <Input
             disabled={pending}
             value={password}
