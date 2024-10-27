@@ -11,50 +11,33 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useCreateWorkspace } from '../api/use-create-workspace';
+import { toast } from 'sonner';
 
 export const CreateWorkspaceModal = () => {
   const router = useRouter();
   const [name, setName] = useState('');
-  const [open, setOpen] = useCreateWorkspaceModal();
-  const { mutate } = useCreateWorkspace();
+  const [open, setOpen] = useCreateWorkspaceModal(); //the state from global state store.
+  const { mutate, isPending } = useCreateWorkspace();
   const handleClose = () => {
     setOpen(false);
-    //TODO: Clear form
+    setName('');
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     mutate(
+      { name },
       {
-        name: 'Workspace 1'
-      },
-      {
-        onSuccess() {
-          //redirect to the new workspace
-        },
-        onError: () => {
-          //toast error
-        },
-        onSettled: () => {
-          //reset the form
+        onSuccess(id) {
+          //redirect to the workspace id page.
+          toast.success('Workspace created successfully');
+          router.push(`/workspace/${id}`);
+          handleClose();
         }
       }
     );
   };
-
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-
-  //   mutate(
-  //     { name },
-  //     {
-  //       onSuccess(id) {
-  //         toast.success('Workspace created');
-  //         router.push(`/workspace/${id}`);
-  //         handleClose();
-  //       }
-  //     }
-  //   );
-  // };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -66,14 +49,14 @@ export const CreateWorkspaceModal = () => {
           <Input
             value={name}
             onChange={e => setName(e.target.value)}
-            // disabled={isPending}
+            disabled={isPending}
             required
             autoFocus
             minLength={3}
             placeholder="Workspace name e.g. 'Work', 'Personal', 'Home'"
           />
           <div className="flex justify-end">
-            <Button disabled={false}>Create</Button>
+            <Button disabled={isPending}>Create</Button>
           </div>
         </form>
       </DialogContent>
