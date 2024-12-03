@@ -4,7 +4,7 @@ import { api } from '../../../../convex/_generated/api';
 import { useCallback, useMemo, useState } from 'react';
 import { Id } from '../../../../convex/_generated/dataModel';
 
-type RequestType = { name: string };
+type RequestType = { id: Id<'workspaces'>; name: string };
 type ResponseType = Id<'workspaces'> | null;
 
 //define the options type
@@ -15,7 +15,7 @@ type Options = {
   throwError?: boolean;
 };
 
-export const useCreateWorkspace = () => {
+export const useUpdateWorkspace = () => {
   const [data, setData] = useState<ResponseType>(null);
   const [error, setError] = useState<Error | null>(null);
   const [status, setStatus] = useState<
@@ -29,7 +29,7 @@ export const useCreateWorkspace = () => {
   const isSettled = useMemo(() => status === 'settled', [status]);
 
   //get the mutation function from the api.convex/workspaces.ts
-  const mutation = useMutation(api.workspaces.create);
+  const mutation = useMutation(api.workspaces.update);
 
   //define the mutate function. This will get the values from the form and pass it to the mutation function. It will also handle the options and the status.
   //useCallback in case we need to use it in a useEffect and therefore need it to be a stable reference (memoized).
