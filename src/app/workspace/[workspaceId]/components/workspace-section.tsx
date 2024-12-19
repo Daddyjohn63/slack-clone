@@ -9,7 +9,7 @@ interface WorkspaceSectionProps {
   children: React.ReactNode;
   label: string;
   hint: string;
-  onNew: () => void;
+  onNew?: () => void;
 }
 
 export const WorkspaceSection: React.FC<WorkspaceSectionProps> = ({
